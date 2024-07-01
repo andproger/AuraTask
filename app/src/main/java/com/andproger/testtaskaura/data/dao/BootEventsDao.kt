@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.andproger.testtaskaura.data.entity.BootEventEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface BootEventsDao {
@@ -14,4 +15,7 @@ interface BootEventsDao {
 
     @Query("SELECT * FROM BootEventEntity  ORDER BY timestamp DESC")
     suspend fun getAll(): List<BootEventEntity>
+
+    @Query("SELECT * FROM BootEventEntity  ORDER BY timestamp DESC")
+    fun getAllFlow(): Flow<List<BootEventEntity>>
 }

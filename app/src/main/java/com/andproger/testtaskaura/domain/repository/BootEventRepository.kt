@@ -1,6 +1,7 @@
 package com.andproger.testtaskaura.domain.repository
 
 import com.andproger.testtaskaura.domain.model.BootEvent
+import kotlinx.coroutines.flow.Flow
 
 
 interface BootEventRepository {
@@ -8,5 +9,5 @@ interface BootEventRepository {
 
     suspend fun getBootEvents(): List<BootEvent>
 
-    suspend fun incrementDismissCount(): Int
+    fun getBootEventsFlow(): Flow<List<BootEvent>>
 }

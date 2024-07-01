@@ -11,7 +11,13 @@ import android.os.Build
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.andproger.testtaskaura.presentation.broadcast.NotificationDismissReceiver
+import com.andproger.testtaskaura.presentation.notifications.NotificationDefaults.REPEAT_INTERVAL_MIN
+import com.andproger.testtaskaura.presentation.worker.NotificationWorker
+import java.util.concurrent.TimeUnit
 
 fun Context.createBootEventsNotificationChannel() {
     //TODO string resources
@@ -29,10 +35,21 @@ fun Context.createBootEventsNotificationChannel() {
     }
 }
 
+fun Context.scheduleBootEventPeriodicWork() {
+    val workRequest = PeriodicWorkRequestBuilder<NotificationWorker>(REPEAT_INTERVAL_MIN, TimeUnit.MINUTES)
+        .build()
+
+    WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+        WORK_NAME,
+        ExistingPeriodicWorkPolicy.UPDATE,
+        workRequest
+    )
+}
+
 fun Context.showBootEventNotification(text: String) {
+    //TODO string resources
     createBootEventsNotificationChannel()
 
-    //TODO string resources
     val notificationManager = NotificationManagerCompat.from(this)
 
     val deleteIntent = Intent(this, NotificationDismissReceiver::class.java)
@@ -57,10 +74,10 @@ fun Context.showBootEventNotification(text: String) {
     }
 }
 
+const val WORK_NAME = "boot_event_notification"
 const val BOOT_EVENTS_CHANNEL_ID = "BOOT_EVENTS_CHANNEL_ID"
 const val DELETE_BOOT_NOTIFICATION_REQUEST_CODE = 112
 
 object NotificationDefaults {
-    const val DISMISS_LIMIT_COUNT = 5
-    const val INTERVAL_PER_DISMISSAL_MIN = 20
+    const val REPEAT_INTERVAL_MIN = 15L
 }

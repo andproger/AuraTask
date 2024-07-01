@@ -3,8 +3,6 @@ package com.andproger.testtaskaura.presentation.broadcast
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.util.Log
-import com.andproger.testtaskaura.data.entity.BootEventEntity
 import com.andproger.testtaskaura.domain.model.BootEvent
 import com.andproger.testtaskaura.domain.repository.BootEventRepository
 import dagger.hilt.android.AndroidEntryPoint

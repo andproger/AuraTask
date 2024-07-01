@@ -8,6 +8,8 @@ import com.andproger.testtaskaura.domain.model.BootNotificationParams
 import com.andproger.testtaskaura.domain.repository.BootEventRepository
 import com.andproger.testtaskaura.domain.repository.BootNotificationParamsRepository
 import com.andproger.testtaskaura.domain.repository.DismissedNotificationsCountRepository
+import com.andproger.testtaskaura.domain.usecase.GetBootEventsSummaryUseCase
+import com.andproger.testtaskaura.domain.usecase.GetBootEventsSummaryUseCaseImpl
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -17,19 +19,7 @@ import dagger.hilt.components.SingletonComponent
 
 @InstallIn(SingletonComponent::class)
 @Module
-abstract class RepositoryBindModule {
+abstract class UseCaseBindModule {
     @Binds
-    abstract fun bindBootEventsRepository(bootEventsRepositoryImpl: BootEventRepositoryImpl): BootEventRepository
-
-    @Binds
-    abstract fun bindDismissedNotificationsCountRepository(repositoryImpl: DismissedNotificationsCountRepositoryImpl): DismissedNotificationsCountRepository
-}
-
-@InstallIn(SingletonComponent::class)
-@Module
-object RepositoryProvideModule {
-    @Provides
-    fun bindBootNotificationRepository(@ApplicationContext context: Context): BootNotificationParamsRepository {
-        return BootNotificationParamsRepositoryImpl(context, BootNotificationParams.default)
-    }
+    abstract fun bindGetBootEventsSummaryUseCase(useCaseImpl: GetBootEventsSummaryUseCaseImpl): GetBootEventsSummaryUseCase
 }

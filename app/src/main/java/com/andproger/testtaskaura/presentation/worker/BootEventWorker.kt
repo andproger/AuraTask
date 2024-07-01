@@ -14,7 +14,7 @@ import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 
-fun scheduleNextNotification(context: Context, delay: Long) {
+fun scheduleNextOneTimeWork(context: Context, delay: Long) {
     val workRequest = OneTimeWorkRequestBuilder<NotificationWorker>()
         .setInitialDelay(delay, TimeUnit.MILLISECONDS)
         .build()
@@ -31,10 +31,10 @@ class NotificationWorker(
 
     override suspend fun doWork(): Result {
         val context = applicationContext
-
         val bootEvents = bootEventRepository.getBootEvents()
 
-        //TODO move this logic to separate class to use in other places (UI)
+        //TODO string resources
+        //TODO move this logic to a separate file/class
         val notificationText = when {
             bootEvents.isEmpty() -> "No boots detected"
             bootEvents.size == 1 -> "The boot was detected = ${bootEvents.first().timestamp.toFormattedDate()}"
@@ -47,7 +47,6 @@ class NotificationWorker(
         }
 
         context.showBootEventNotification(notificationText)
-
         return Result.success()
     }
 

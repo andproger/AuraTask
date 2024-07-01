@@ -1,13 +1,14 @@
 package com.andproger.testtaskaura.data.repository
 
 import android.content.Context
-import android.preference.PreferenceManager
 import com.andproger.testtaskaura.data.dao.BootEventsDao
 import com.andproger.testtaskaura.data.mapper.mapBootEventToDomain
 import com.andproger.testtaskaura.data.mapper.mapBootEventToEntity
 import com.andproger.testtaskaura.domain.model.BootEvent
 import com.andproger.testtaskaura.domain.repository.BootEventRepository
 import dagger.hilt.android.qualifiers.ApplicationContext
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 
@@ -23,21 +24,7 @@ class BootEventRepositoryImpl @Inject constructor(
         return bootEventsDao.getAll().map(::mapBootEventToDomain)
     }
 
-    override suspend fun incrementDismissCount(): Int {
-        //TODO: Use DataStore instead of SharedPreferences
-        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-        val currentCount = prefs.getInt(DISMISS_COUNT_KEY, 0)
-        val newCount = currentCount + 1
-        prefs.edit().putInt(DISMISS_COUNT_KEY, newCount).apply()
-        return newCount
-    }
-
-    suspend fun resetDismissCount() {
-        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
-        prefs.edit().putInt(DISMISS_COUNT_KEY, 0).apply()
-    }
-
-    companion object {
-        const val DISMISS_COUNT_KEY = "dismiss_count"
+    override fun getBootEventsFlow(): Flow<List<BootEvent>> {
+        return bootEventsDao.getAllFlow().map { it.map(::mapBootEventToDomain) }
     }
 }

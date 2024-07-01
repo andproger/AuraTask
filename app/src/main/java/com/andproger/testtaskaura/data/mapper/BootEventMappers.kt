@@ -8,6 +8,5 @@ fun mapBootEventToDomain(bootEventEntity: BootEventEntity) = with(bootEventEntit
 }
 
 fun mapBootEventToEntity(bootEventDomain: BootEvent) = with(bootEventDomain) {
-    //TODO new id generation
-    BootEventEntity(1, timestamp = timestamp)
+    BootEventEntity(timestamp)
 }

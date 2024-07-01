@@ -9,7 +9,7 @@ import androidx.core.content.ContextCompat
 
 fun Context.requestNotificationPermission(
     requestPermissionLauncher: ActivityResultLauncher<String>,
-    onPermissionGranted: () -> Unit
+    onPermissionGranted: () -> Unit = {}
 ) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
         when {
