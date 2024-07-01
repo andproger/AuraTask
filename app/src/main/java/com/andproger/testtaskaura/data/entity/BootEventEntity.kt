@@ -6,6 +6,6 @@ import androidx.room.PrimaryKey
 @Entity
 data class BootEventEntity(
     @PrimaryKey(autoGenerate = true)
-    val id: Int?,
-    val eventDatetime: String
+    val id: Int? = null,
+    val timestamp: Long
 )

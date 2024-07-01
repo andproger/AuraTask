@@ -18,7 +18,6 @@ class MainViewModel @Inject constructor(
 
     init {
         viewModelScope.launch(Dispatchers.IO) {
-            dao.insert(BootEventEntity(1, "test"))
             dao.getAll().let {
                 Log.d("MainViewModel", it.toString())
             }

@@ -12,6 +12,6 @@ interface BootEventsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(bootEventEntity: BootEventEntity)
 
-    @Query("SELECT * FROM BootEventEntity")
+    @Query("SELECT * FROM BootEventEntity  ORDER BY timestamp DESC")
     suspend fun getAll(): List<BootEventEntity>
 }

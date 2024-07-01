@@ -61,6 +61,7 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.dagger.hilt.android)
+    implementation(libs.androidx.hilt.common)
     ksp(libs.dagger.hilt.compiler)
     implementation(libs.dagger.hilt.navigation.compose)
     implementation(libs.androidx.room.runtime)

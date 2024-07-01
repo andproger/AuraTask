@@ -8,6 +8,7 @@ import com.andproger.testtaskaura.presentation.screens.main.MainScreen
 
 @Composable
 fun MainGraph(navController: NavHostController) {
+    //TODO screen for Boot Events
     NavHost(
         navController = navController,
         startDestination = "A",
