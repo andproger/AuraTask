@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     alias(libs.plugins.googleDevtoolsKsp)
-    id("dagger.hilt.android.plugin") //TODO as alias
+    alias(libs.plugins.daggerHiltAndroidPlugin)
 }
 
 android {

@@ -34,23 +34,24 @@ fun MainScreen() {
         Text(
             text = state.summaryText
         )
-        NotificationsParams(
+        NotificationsSettings(
             state,
-            //TODO actions
-            {},
-            {},
-            {}
+            viewModel::onTotalDismissalsAllowedChanged,
+            viewModel::onIntervalBetweenDismissalsChanged,
+            viewModel::saveSettings
         )
     }
 }
 
+//TODO move to separate screen
 @Composable
-fun NotificationsParams(
+fun NotificationsSettings(
     state: MainState,
     onTotalDismissalsAllowedChanged: (String) -> Unit,
     onIntervalBetweenDismissalsChanged: (String) -> Unit,
     saveSettings: () -> Unit
 ) {
+    //TODO string resources
     val totalDismissalsAllowed = state.totalDismissalsAllowed
     val intervalBetweenDismissals = state.intervalBetweenDismissals
 
@@ -62,24 +63,18 @@ fun NotificationsParams(
     ) {
         NumberInputField(
             label = "Total dismissals allowed",
-            value = totalDismissalsAllowed.toString(),
+            value = totalDismissalsAllowed?.toString() ?: "",
             onValueChange = { newValue -> onTotalDismissalsAllowedChanged(newValue) }
         )
-
         Spacer(modifier = Modifier.height(16.dp))
-
         NumberInputField(
             label = "Interval between dismissals",
-            value = intervalBetweenDismissals.toString(),
+            value = intervalBetweenDismissals?.toString() ?: "",
             onValueChange = { newValue -> onIntervalBetweenDismissalsChanged(newValue) }
         )
-
         Spacer(modifier = Modifier.height(16.dp))
-
         Button(
-            onClick = {
-                saveSettings()
-            },
+            onClick = { saveSettings() },
             modifier = Modifier.align(Alignment.End)
         ) {
             Text("Save")

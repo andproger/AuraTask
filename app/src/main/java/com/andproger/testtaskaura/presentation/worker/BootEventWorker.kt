@@ -3,23 +3,48 @@ package com.andproger.testtaskaura.presentation.worker
 import android.content.Context
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
+import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.WorkerParameters
+import com.andproger.testtaskaura.domain.model.BootNotificationParams
 import com.andproger.testtaskaura.domain.repository.BootEventRepository
 import com.andproger.testtaskaura.presentation.notifications.showBootEventNotification
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import com.andproger.testtaskaura.presentation.worker.NotificationDefaults.REPEAT_INTERVAL_MIN
 import java.util.concurrent.TimeUnit
 
+fun calculateNextInterval(params: BootNotificationParams, dismissCount: Int): Long {
+    return if (dismissCount > params.totalDismissalsAllowed) {
+        REPEAT_INTERVAL_MIN * 60 * 1000L // 15 minutes in milliseconds
+    } else {
+        dismissCount * params.intervalBetweenDismissalsMin * 60 * 1000L // Dismiss count * 20 minutes in milliseconds
+    }
+}
 
-fun scheduleNextOneTimeWork(context: Context, delay: Long) {
+fun scheduleNextOneTimeWork(
+    context: Context,
+    params: BootNotificationParams,
+    dismissCount: Int
+) {
+    val delay = calculateNextInterval(params, dismissCount)
+
     val workRequest = OneTimeWorkRequestBuilder<NotificationWorker>()
         .setInitialDelay(delay, TimeUnit.MILLISECONDS)
         .build()
 
     WorkManager.getInstance(context).enqueue(workRequest)
+}
+
+fun Context.scheduleBootEventPeriodicWork() {
+    val workRequest = PeriodicWorkRequestBuilder<NotificationWorker>(REPEAT_INTERVAL_MIN, TimeUnit.MINUTES)
+        .build()
+
+    WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+        WORK_NAME,
+        ExistingPeriodicWorkPolicy.UPDATE,
+        workRequest
+    )
 }
 
 @HiltWorker
@@ -33,32 +58,13 @@ class NotificationWorker(
         val context = applicationContext
         val bootEvents = bootEventRepository.getBootEvents()
 
-        //TODO string resources
-        //TODO move this logic to a separate file/class
-        val notificationText = when {
-            bootEvents.isEmpty() -> "No boots detected"
-            bootEvents.size == 1 -> "The boot was detected = ${bootEvents.first().timestamp.toFormattedDate()}"
-            else -> {
-                val lastBootTime = bootEvents[0].timestamp
-                val secondLastBootTime = bootEvents[1].timestamp
-                val delta = lastBootTime - secondLastBootTime
-                "Last boots time delta = ${delta.toFormattedDuration()}"
-            }
-        }
-
-        context.showBootEventNotification(notificationText)
+        context.showBootEventNotification(bootEvents)
         return Result.success()
     }
+}
 
-    private fun Long.toFormattedDate(): String {
-        val sdf = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
-        return sdf.format(Date(this))
-    }
+const val WORK_NAME = "boot_event_notification"
 
-    private fun Long.toFormattedDuration(): String {
-        val seconds = this / 1000
-        val minutes = seconds / 60
-        val hours = minutes / 60
-        return "$hours hours, ${minutes % 60} minutes"
-    }
+object NotificationDefaults {
+    const val REPEAT_INTERVAL_MIN = 15L
 }

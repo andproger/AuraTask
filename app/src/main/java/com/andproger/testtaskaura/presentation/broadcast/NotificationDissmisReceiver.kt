@@ -20,20 +20,16 @@ class NotificationDismissReceiver : BroadcastReceiver() {
         val notificationParamsRepository = hiltEntryPoint.bootNotificationParamsRepository()
         val dismissCountRepository = hiltEntryPoint.dismissCountRepository()
 
-
         //TODO create AppScope and use instead of GlobalScope
         GlobalScope.launch(Dispatchers.IO) {
             val params = notificationParamsRepository.get()
             val dismissCount = dismissCountRepository.increment()
 
-            //TODO const 15 min
-            val nextInterval = if (dismissCount > params.totalDismissalsAllowed) {
-                15 * 60 * 1000L // 15 minutes in milliseconds
-            } else {
-                dismissCount * params.intervalBetweenDismissalsMin * 60 * 1000L // Dismiss count * 20 minutes in milliseconds
+            //TODO move logic and schedule call to some domain class
+            if (dismissCount > params.totalDismissalsAllowed) {
+                dismissCountRepository.reset()
             }
-
-            scheduleNextOneTimeWork(context, nextInterval)
+            scheduleNextOneTimeWork(context, params, dismissCount)
         }
     }
 }

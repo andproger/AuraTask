@@ -6,8 +6,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.navigation.compose.rememberNavController
 import com.andproger.testtaskaura.presentation.notifications.requestNotificationPermission
-import com.andproger.testtaskaura.presentation.notifications.scheduleBootEventPeriodicWork
 import com.andproger.testtaskaura.presentation.theme.TestTaskAuraTheme
+import com.andproger.testtaskaura.presentation.worker.scheduleBootEventPeriodicWork
 import dagger.hilt.android.AndroidEntryPoint
 
 

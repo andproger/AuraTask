@@ -11,13 +11,10 @@ import android.os.Build
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
+import com.andproger.testtaskaura.domain.model.BootEvent
 import com.andproger.testtaskaura.presentation.broadcast.NotificationDismissReceiver
-import com.andproger.testtaskaura.presentation.notifications.NotificationDefaults.REPEAT_INTERVAL_MIN
-import com.andproger.testtaskaura.presentation.worker.NotificationWorker
-import java.util.concurrent.TimeUnit
+import com.andproger.testtaskaura.presentation.utils.toFormattedDate
+import com.andproger.testtaskaura.presentation.utils.toFormattedDuration
 
 fun Context.createBootEventsNotificationChannel() {
     //TODO string resources
@@ -35,19 +32,22 @@ fun Context.createBootEventsNotificationChannel() {
     }
 }
 
-fun Context.scheduleBootEventPeriodicWork() {
-    val workRequest = PeriodicWorkRequestBuilder<NotificationWorker>(REPEAT_INTERVAL_MIN, TimeUnit.MINUTES)
-        .build()
-
-    WorkManager.getInstance(this).enqueueUniquePeriodicWork(
-        WORK_NAME,
-        ExistingPeriodicWorkPolicy.UPDATE,
-        workRequest
-    )
+fun createBootNotificationText(bootEvents: List<BootEvent>): String {
+    return when {
+        bootEvents.isEmpty() -> "No boots detected"
+        bootEvents.size == 1 -> "The boot was detected = ${bootEvents.first().timestamp.toFormattedDate()}"
+        else -> {
+            val lastBootTime = bootEvents[0].timestamp
+            val secondLastBootTime = bootEvents[1].timestamp
+            val delta = lastBootTime - secondLastBootTime
+            "Last boots time delta = ${delta.toFormattedDuration()}"
+        }
+    }
 }
 
-fun Context.showBootEventNotification(text: String) {
+fun Context.showBootEventNotification(bootEvents: List<BootEvent>) {
     //TODO string resources
+    val text = createBootNotificationText(bootEvents)
     createBootEventsNotificationChannel()
 
     val notificationManager = NotificationManagerCompat.from(this)
@@ -74,10 +74,5 @@ fun Context.showBootEventNotification(text: String) {
     }
 }
 
-const val WORK_NAME = "boot_event_notification"
 const val BOOT_EVENTS_CHANNEL_ID = "BOOT_EVENTS_CHANNEL_ID"
 const val DELETE_BOOT_NOTIFICATION_REQUEST_CODE = 112
-
-object NotificationDefaults {
-    const val REPEAT_INTERVAL_MIN = 15L
-}

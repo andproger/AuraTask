@@ -7,8 +7,7 @@ data class MainState(
 ) {
     companion object {
         val Empty = MainState(
-            //TODO choose empty state
-            summaryText = "Empty summary",
+            summaryText = "",
             totalDismissalsAllowed = null,
             intervalBetweenDismissals = null
         )
