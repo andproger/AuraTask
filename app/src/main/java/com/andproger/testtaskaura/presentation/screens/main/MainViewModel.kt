@@ -18,8 +18,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val getBootEventsSummaryUseCase: GetBootEventsSummaryUseCase,
-    private val bootNotificationParamsRepository: BootNotificationParamsRepository
+    private val getBootEventsSummaryUseCase: GetBootEventsSummaryUseCase
 ) : ViewModel() {
 
     private val _state: MutableStateFlow<MainState> = MutableStateFlow(MainState.Empty)
@@ -30,46 +29,6 @@ class MainViewModel @Inject constructor(
             getBootEventsSummaryUseCase.getSummary().collect { summary ->
                 val text = getSummaryString(summary)
                 _state.update { it.copy(summaryText = text) }
-            }
-        }
-        viewModelScope.launch {
-            bootNotificationParamsRepository.getFlow().collect { params ->
-                _state.update {
-                    it.copy(
-                        totalDismissalsAllowed = params.totalDismissalsAllowed,
-                        intervalBetweenDismissals = params.intervalBetweenDismissalsMin.toInt()
-                    )
-                }
-            }
-        }
-    }
-
-    fun onTotalDismissalsAllowedChanged(newValue: String) {
-        //TODO add validation
-        _state.update {
-            it.copy(totalDismissalsAllowed = newValue.toIntOrNull())
-        }
-    }
-
-    fun onIntervalBetweenDismissalsChanged(newValue: String) {
-        //TODO add validation
-        _state.update {
-            it.copy(intervalBetweenDismissals = newValue.toIntOrNull())
-        }
-    }
-
-    fun saveSettings() {
-        viewModelScope.launch {
-            val dismissalsAllowed = _state.value.totalDismissalsAllowed
-            val intervalBetween = _state.value.intervalBetweenDismissals
-            //TODO add validation
-            if (dismissalsAllowed != null && intervalBetween != null) {
-                bootNotificationParamsRepository.save(
-                    BootNotificationParams(
-                        totalDismissalsAllowed = dismissalsAllowed,
-                        intervalBetweenDismissalsMin = intervalBetween.toLong()
-                    )
-                )
             }
         }
     }

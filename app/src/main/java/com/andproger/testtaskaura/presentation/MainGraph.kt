@@ -4,18 +4,25 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.andproger.testtaskaura.presentation.screens.NavRoutes
 import com.andproger.testtaskaura.presentation.screens.main.MainScreen
+import com.andproger.testtaskaura.presentation.screens.notification_settings.NotificationsSettingsScreen
 
 @Composable
 fun MainGraph(navController: NavHostController) {
     NavHost(
         navController = navController,
-        startDestination = "MainScreen",
+        startDestination = NavRoutes.MainScreen.route,
     ) {
         composable(
-            route = "MainScreen",
+            route = NavRoutes.MainScreen.route,
         ) {
-            MainScreen()
+            MainScreen(navController)
+        }
+        composable(
+            route = NavRoutes.NotificationSettings.route,
+        ) {
+            NotificationsSettingsScreen()
         }
     }
 }
