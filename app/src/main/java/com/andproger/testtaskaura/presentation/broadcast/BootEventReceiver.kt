@@ -20,7 +20,7 @@ class BootEventReceiver : BroadcastReceiver() {
 
     @OptIn(DelicateCoroutinesApi::class)
     override fun onReceive(context: Context?, intent: Intent?) {
-        if (intent?.action == Intent.ACTION_BOOT_COMPLETED) {
+        if (intent?.action == Intent.ACTION_BOOT_COMPLETED || intent?.action == "com.andproger.testtaskaura.TEST_BOOT_COMPLETED") {
             //TODO create AppScope and use instead of GlobalScope
             GlobalScope.launch(Dispatchers.IO) {
                 bootEventRepository.saveBootEvent(BootEvent(System.currentTimeMillis()))
