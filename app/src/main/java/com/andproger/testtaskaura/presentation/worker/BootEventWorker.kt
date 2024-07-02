@@ -1,6 +1,7 @@
 package com.andproger.testtaskaura.presentation.worker
 
 import android.content.Context
+import android.util.Log
 import androidx.hilt.work.HiltWorker
 import androidx.work.CoroutineWorker
 import androidx.work.ExistingPeriodicWorkPolicy
@@ -12,6 +13,8 @@ import com.andproger.testtaskaura.domain.model.BootNotificationParams
 import com.andproger.testtaskaura.domain.repository.BootEventRepository
 import com.andproger.testtaskaura.presentation.notifications.showBootEventNotification
 import com.andproger.testtaskaura.presentation.worker.NotificationDefaults.REPEAT_INTERVAL_MIN
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
 import java.util.concurrent.TimeUnit
 
 fun calculateNextInterval(params: BootNotificationParams, dismissCount: Int): Long {
@@ -48,9 +51,9 @@ fun Context.scheduleBootEventPeriodicWork() {
 }
 
 @HiltWorker
-class NotificationWorker(
-    appContext: Context,
-    workerParams: WorkerParameters,
+class NotificationWorker @AssistedInject constructor(
+    @Assisted appContext: Context,
+    @Assisted workerParams: WorkerParameters,
     private val bootEventRepository: BootEventRepository
 ) : CoroutineWorker(appContext, workerParams) {
 

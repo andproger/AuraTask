@@ -14,21 +14,27 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
 @Module
 abstract class RepositoryBindModule {
+
     @Binds
+    @Singleton
     abstract fun bindBootEventsRepository(bootEventsRepositoryImpl: BootEventRepositoryImpl): BootEventRepository
 
     @Binds
+    @Singleton
     abstract fun bindDismissedNotificationsCountRepository(repositoryImpl: DismissedNotificationsCountRepositoryImpl): DismissedNotificationsCountRepository
 }
 
 @InstallIn(SingletonComponent::class)
 @Module
 object RepositoryProvideModule {
+
     @Provides
+    @Singleton
     fun bindBootNotificationRepository(@ApplicationContext context: Context): BootNotificationParamsRepository {
         return BootNotificationParamsRepositoryImpl(context, BootNotificationParams.default)
     }
