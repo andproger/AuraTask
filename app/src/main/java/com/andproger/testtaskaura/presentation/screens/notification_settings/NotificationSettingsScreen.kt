@@ -18,9 +18,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.andproger.testtaskaura.R
 
 @Composable
 fun NotificationsSettingsScreen() {
@@ -50,7 +52,6 @@ fun NotificationSettingsContent(
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
 
-    //TODO string resources
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -65,7 +66,7 @@ fun NotificationSettingsContent(
                 onTotalDismissalsAllowedChanged(it)
                 isSaveEnabled.value = true
             },
-            label = { Text("Total dismissals allowed") }
+            label = { Text(stringResource(R.string.total_dismissals_allowed)) }
         )
         Spacer(modifier = Modifier.height(8.dp))
         TextField(
@@ -77,7 +78,7 @@ fun NotificationSettingsContent(
                 onIntervalBetweenDismissalsChanged(it)
                 isSaveEnabled.value = true
             },
-            label = { Text("Interval between dismissals") }
+            label = { Text(stringResource(R.string.interval_between_dismissals)) }
         )
         Spacer(modifier = Modifier.height(8.dp))
         Button(
@@ -89,7 +90,7 @@ fun NotificationSettingsContent(
             modifier = Modifier.align(Alignment.End),
             enabled = isSaveEnabled.value
         ) {
-            Text("Save")
+            Text(stringResource(R.string.save))
         }
     }
 }

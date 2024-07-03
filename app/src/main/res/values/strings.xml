@@ -2,4 +2,11 @@
     <string name="app_name">TestTaskAura</string>
     <string name="notification_settings">Notification Settings</string>
     <string name="no_boots_detected">No boots detected</string>
+    <string name="total_dismissals_allowed">Total dismissals allowed</string>
+    <string name="interval_between_dismissals">Interval between dismissals</string>
+    <string name="save">Save</string>
+    <string name="boot_events">Boot Events</string>
+    <string name="boot_events_chanel_description">Channel for boot events notifications</string>
+    <string name="the_boot_was_detected">The boot was detected = %s</string>
+    <string name="last_boots_time_delta">Last boots time delta = %s</string>
 </resources>

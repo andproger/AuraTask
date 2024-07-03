@@ -11,16 +11,16 @@ import android.os.Build
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import com.andproger.testtaskaura.R
 import com.andproger.testtaskaura.domain.model.BootEvent
 import com.andproger.testtaskaura.presentation.broadcast.NotificationDismissReceiver
 import com.andproger.testtaskaura.presentation.utils.toFormattedDate
 import com.andproger.testtaskaura.presentation.utils.toFormattedDuration
 
 fun Context.createBootEventsNotificationChannel() {
-    //TODO string resources
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        val name = "Boot Events"
-        val descriptionText = "Channel for boot events notifications"
+        val name = getString(R.string.boot_events)
+        val descriptionText = getString(R.string.boot_events_chanel_description)
         val importance = NotificationManager.IMPORTANCE_HIGH
         val channel = NotificationChannel(BOOT_EVENTS_CHANNEL_ID, name, importance).apply {
             description = descriptionText
@@ -32,22 +32,24 @@ fun Context.createBootEventsNotificationChannel() {
     }
 }
 
-fun createBootNotificationText(bootEvents: List<BootEvent>): String {
+fun createBootNotificationText(context: Context, bootEvents: List<BootEvent>): String {
     return when {
-        bootEvents.isEmpty() -> "No boots detected"
-        bootEvents.size == 1 -> "The boot was detected = ${bootEvents.first().timestamp.toFormattedDate()}"
+        bootEvents.isEmpty() -> context.getString(R.string.no_boots_detected)
+        bootEvents.size == 1 -> context.getString(
+            R.string.the_boot_was_detected,
+            bootEvents.first().timestamp.toFormattedDate()
+        )
         else -> {
             val lastBootTime = bootEvents[0].timestamp
             val secondLastBootTime = bootEvents[1].timestamp
             val delta = lastBootTime - secondLastBootTime
-            "Last boots time delta = ${delta.toFormattedDuration()}"
+            context.getString(R.string.last_boots_time_delta, delta.toFormattedDuration())
         }
     }
 }
 
 fun Context.showBootEventNotification(bootEvents: List<BootEvent>) {
-    //TODO string resources
-    val text = createBootNotificationText(bootEvents)
+    val text = createBootNotificationText(this, bootEvents)
     createBootEventsNotificationChannel()
 
     val notificationManager = NotificationManagerCompat.from(this)
@@ -63,7 +65,7 @@ fun Context.showBootEventNotification(bootEvents: List<BootEvent>) {
 
     val notification = NotificationCompat.Builder(this, BOOT_EVENTS_CHANNEL_ID)
         .setSmallIcon(android.R.drawable.ic_dialog_info)
-        .setContentTitle("Boot Event")
+        .setContentTitle(getString(R.string.boot_events))
         .setContentText(text)
         .setDeleteIntent(deletePendingIntent)
         .setPriority(NotificationCompat.PRIORITY_HIGH)
