@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">TestTaskAura</string>
+    <string name="notification_settings">Notification Settings</string>
+    <string name="no_boots_detected">No boots detected</string>
 </resources>

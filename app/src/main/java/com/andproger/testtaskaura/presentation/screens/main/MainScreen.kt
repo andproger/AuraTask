@@ -12,10 +12,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.andproger.testtaskaura.R
+import com.andproger.testtaskaura.presentation.screens.NavRoutes
 
 @Composable
 fun MainScreen(
@@ -41,11 +44,11 @@ fun MainScreen(
 
             Button(
                 onClick = {
-                    navController.navigate("notification_settings")
+                    navController.navigate(NavRoutes.NotificationSettings.route)
                 },
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
-                Text(text = "Notification Settings")
+                Text(text = stringResource(R.string.notification_settings))
             }
         }
     }
