@@ -4,24 +4,26 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import com.andproger.testtaskaura.presentation.di.BootEventRepositoryEntryPoint
+import com.andproger.testtaskaura.presentation.di.ReceiverCoroutineScope
 import com.andproger.testtaskaura.presentation.worker.scheduleNextOneTimeWork
 import dagger.hilt.android.EntryPointAccessors
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
 class NotificationDismissReceiver : BroadcastReceiver() {
 
-    @OptIn(DelicateCoroutinesApi::class)
+    @Inject
+    @ReceiverCoroutineScope
+    lateinit var coroutineScope: CoroutineScope
+
     override fun onReceive(context: Context, intent: Intent) {
         val hiltEntryPoint = EntryPointAccessors.fromApplication(context, BootEventRepositoryEntryPoint::class.java)
         val notificationParamsRepository = hiltEntryPoint.bootNotificationParamsRepository()
         val dismissCountRepository = hiltEntryPoint.dismissCountRepository()
 
-        //TODO create AppScope and use instead of GlobalScope
-        GlobalScope.launch(Dispatchers.IO) {
+        coroutineScope.launch {
             val params = notificationParamsRepository.get()
             val dismissCount = dismissCountRepository.increment()
 

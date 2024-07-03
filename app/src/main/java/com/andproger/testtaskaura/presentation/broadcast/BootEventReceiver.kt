@@ -5,10 +5,9 @@ import android.content.Context
 import android.content.Intent
 import com.andproger.testtaskaura.domain.model.BootEvent
 import com.andproger.testtaskaura.domain.repository.BootEventRepository
+import com.andproger.testtaskaura.presentation.di.ReceiverCoroutineScope
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -18,11 +17,13 @@ class BootEventReceiver : BroadcastReceiver() {
     @Inject
     lateinit var bootEventRepository: BootEventRepository
 
-    @OptIn(DelicateCoroutinesApi::class)
+    @Inject
+    @ReceiverCoroutineScope
+    lateinit var coroutineScope: CoroutineScope
+
     override fun onReceive(context: Context?, intent: Intent?) {
         if (intent?.action == Intent.ACTION_BOOT_COMPLETED || intent?.action == "com.andproger.testtaskaura.TEST_BOOT_COMPLETED") {
-            //TODO create AppScope and use instead of GlobalScope
-            GlobalScope.launch(Dispatchers.IO) {
+            coroutineScope.launch {
                 bootEventRepository.saveBootEvent(BootEvent(System.currentTimeMillis()))
             }
         }
