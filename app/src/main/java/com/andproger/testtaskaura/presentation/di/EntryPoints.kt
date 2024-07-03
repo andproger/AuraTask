@@ -9,7 +9,7 @@ import dagger.hilt.components.SingletonComponent
 
 @EntryPoint
 @InstallIn(SingletonComponent::class)
-interface BootEventRepositoryEntryPoint {
+interface ReceiverEntryPoint {
     fun bootEventRepository(): BootEventRepository
     fun bootNotificationParamsRepository(): BootNotificationParamsRepository
     fun dismissCountRepository(): DismissedNotificationsCountRepository

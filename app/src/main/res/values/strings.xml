@@ -9,4 +9,5 @@
     <string name="boot_events_chanel_description">Channel for boot events notifications</string>
     <string name="the_boot_was_detected">The boot was detected = %s</string>
     <string name="last_boots_time_delta">Last boots time delta = %s</string>
+    <string name="time_duration">"%s hours, %s minutes"</string>
 </resources>

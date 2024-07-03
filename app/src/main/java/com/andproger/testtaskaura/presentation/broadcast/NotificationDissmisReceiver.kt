@@ -3,7 +3,7 @@ package com.andproger.testtaskaura.presentation.broadcast
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import com.andproger.testtaskaura.presentation.di.BootEventRepositoryEntryPoint
+import com.andproger.testtaskaura.presentation.di.ReceiverEntryPoint
 import com.andproger.testtaskaura.presentation.di.ReceiverCoroutineScope
 import com.andproger.testtaskaura.presentation.worker.scheduleNextOneTimeWork
 import dagger.hilt.android.EntryPointAccessors
@@ -19,7 +19,7 @@ class NotificationDismissReceiver : BroadcastReceiver() {
     lateinit var coroutineScope: CoroutineScope
 
     override fun onReceive(context: Context, intent: Intent) {
-        val hiltEntryPoint = EntryPointAccessors.fromApplication(context, BootEventRepositoryEntryPoint::class.java)
+        val hiltEntryPoint = EntryPointAccessors.fromApplication(context, ReceiverEntryPoint::class.java)
         val notificationParamsRepository = hiltEntryPoint.bootNotificationParamsRepository()
         val dismissCountRepository = hiltEntryPoint.dismissCountRepository()
 

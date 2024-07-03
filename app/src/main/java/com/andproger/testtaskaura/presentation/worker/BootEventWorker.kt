@@ -10,6 +10,7 @@ import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.andproger.testtaskaura.domain.model.BootNotificationParams
 import com.andproger.testtaskaura.domain.repository.BootEventRepository
+import com.andproger.testtaskaura.presentation.notifications.BootNotificationMapper
 import com.andproger.testtaskaura.presentation.notifications.showBootEventNotification
 import com.andproger.testtaskaura.presentation.worker.NotificationDefaults.REPEAT_INTERVAL_MIN
 import dagger.assisted.Assisted
@@ -18,9 +19,9 @@ import java.util.concurrent.TimeUnit
 
 fun calculateNextInterval(params: BootNotificationParams, dismissCount: Int): Long {
     return if (dismissCount > params.totalDismissalsAllowed) {
-        REPEAT_INTERVAL_MIN * 60 * 1000L // 15 minutes in milliseconds
+        REPEAT_INTERVAL_MIN * 60 * 1000L
     } else {
-        dismissCount * params.intervalBetweenDismissalsMin * 60 * 1000L // Dismiss count * 20 minutes in milliseconds
+        dismissCount * params.intervalBetweenDismissalsMin * 60 * 1000L
     }
 }
 
@@ -53,14 +54,16 @@ fun Context.scheduleBootEventPeriodicWork() {
 class NotificationWorker @AssistedInject constructor(
     @Assisted appContext: Context,
     @Assisted workerParams: WorkerParameters,
-    private val bootEventRepository: BootEventRepository
+    private val bootEventRepository: BootEventRepository,
+    private val bootNotificationMapper: BootNotificationMapper,
 ) : CoroutineWorker(appContext, workerParams) {
 
     override suspend fun doWork(): Result {
         val context = applicationContext
         val bootEvents = bootEventRepository.getBootEvents()
+        val text = bootNotificationMapper(bootEvents)
 
-        context.showBootEventNotification(bootEvents)
+        context.showBootEventNotification(text)
         return Result.success()
     }
 }

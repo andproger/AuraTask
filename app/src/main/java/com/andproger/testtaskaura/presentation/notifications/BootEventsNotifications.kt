@@ -12,10 +12,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.andproger.testtaskaura.R
-import com.andproger.testtaskaura.domain.model.BootEvent
 import com.andproger.testtaskaura.presentation.broadcast.NotificationDismissReceiver
-import com.andproger.testtaskaura.presentation.utils.toFormattedDate
-import com.andproger.testtaskaura.presentation.utils.toFormattedDuration
 
 fun Context.createBootEventsNotificationChannel() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -32,24 +29,7 @@ fun Context.createBootEventsNotificationChannel() {
     }
 }
 
-fun createBootNotificationText(context: Context, bootEvents: List<BootEvent>): String {
-    return when {
-        bootEvents.isEmpty() -> context.getString(R.string.no_boots_detected)
-        bootEvents.size == 1 -> context.getString(
-            R.string.the_boot_was_detected,
-            bootEvents.first().timestamp.toFormattedDate()
-        )
-        else -> {
-            val lastBootTime = bootEvents[0].timestamp
-            val secondLastBootTime = bootEvents[1].timestamp
-            val delta = lastBootTime - secondLastBootTime
-            context.getString(R.string.last_boots_time_delta, delta.toFormattedDuration())
-        }
-    }
-}
-
-fun Context.showBootEventNotification(bootEvents: List<BootEvent>) {
-    val text = createBootNotificationText(this, bootEvents)
+fun Context.showBootEventNotification(text: String) {
     createBootEventsNotificationChannel()
 
     val notificationManager = NotificationManagerCompat.from(this)
